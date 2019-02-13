@@ -34,11 +34,6 @@ namespace EstudoApiNetCore.Models
             set { }
         }
 
-        public UsuarioModel()
-        {
-
-        }
-        
         public UsuarioModel(string primeiroNome, string ultimoNome, string nomeUsuario, string email, string endereco, int numero, string telefone, string senha)
         {
             PrimeiroNome = primeiroNome;

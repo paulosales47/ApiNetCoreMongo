@@ -11,16 +11,14 @@ namespace EstudoApiNetCore.Repository
         private IMongoClient _client;
         private IMongoDatabase _database;
         private IMongoCollection<UsuarioModel> _collection;
-
-
+        
         public UsuarioRepository()
         {
             _client = new MongoClient("mongodb://localhost:27017");
             _database = _client.GetDatabase("estudoNetCore");
             _collection = _database.GetCollection<UsuarioModel>("usuarios");
         }
-
-
+        
         public async Task<UsuarioModel> Salvar(UsuarioModel usuario)
         {
             usuario.DtAtualizacao = DateTime.Now;
@@ -41,9 +39,27 @@ namespace EstudoApiNetCore.Repository
                 .Set("Numero", usuario.Numero)
                 .Set("Telefone", usuario.Telefone)
                 .Set("DtAtualizacao", DateTime.Now);
-
-
+            
             return await _collection.UpdateOneAsync(filter, update);
         }
+
+        public async Task<DeleteResult> Excluir(string id)
+        {
+            var filter = Builders<UsuarioModel>.Filter.Eq("_id", new ObjectId(id));
+
+            return await _collection.DeleteOneAsync(filter);
+        }
+
+        public async Task<IAsyncCursor<UsuarioModel>> ListarUsuarios()
+        {
+            return await _collection.FindAsync(_ => true);
+        }
+
+        public async Task<IAsyncCursor<UsuarioModel>> BuscarUsuario(string id)
+        {
+            var filter = Builders<UsuarioModel>.Filter.Eq("_id", new ObjectId(id));
+            return await _collection.FindAsync(_ => true);
+        }
+
     }
 }
